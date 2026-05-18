@@ -1,0 +1,6 @@
+[MLflow] Security middleware enabled with default settings (localhost-only). To allow connections from other hosts, use --host 0.0.0.0 and configure --allowed-hosts and --cors-allowed-origins.
+2026/05/17 08:43:54 WARNING mlflow.server: MLflow job execution requirements not met (MLflow job backend does not support Windows system.). Server will start without job execution support. Errors will be surfaced at job invocation time.
+2026/05/17 08:43:56 INFO:     Started server process [11452]
+2026/05/17 08:43:56 INFO:     Waiting for application startup.
+2026/05/17 08:43:56 INFO:     Application startup complete.
+2026/05/17 08:43:56 INFO:     Uvicorn running on http://127.0.0.1:5002 (Press CTRL+C to quit)

@@ -1,0 +1,7 @@
+project: cryptopredictpro
+provider: local
+registry: ../reports/feast/registry.db
+online_store:
+  type: sqlite
+  path: ../reports/feast/online_store.db
+entity_key_serialization_version: 3

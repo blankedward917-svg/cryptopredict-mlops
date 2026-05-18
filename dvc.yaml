@@ -1,0 +1,92 @@
+stages:
+  inventory:
+    cmd: python scripts/dataset_inventory.py --output-dir reports/inventory
+    deps:
+      - scripts/dataset_inventory.py
+      - milestone-1
+      - milestone-2/infosys/cleaned data
+      - live_data
+    outs:
+      - reports/inventory/dataset_inventory.csv
+      - reports/inventory/artifact_inventory.csv
+      - reports/inventory/db_ohlcv_inventory.csv
+      - reports/inventory/dataset_inventory.md
+
+  data_quality:
+    cmd: python scripts/data_quality.py
+    deps:
+      - scripts/data_quality.py
+      - milestone-2/infosys/cleaned data
+    outs:
+      - reports/data_quality/results.csv
+
+  retention_check:
+    cmd: python scripts/validate_retention.py --report reports/inventory/retention_check.csv
+    deps:
+      - scripts/validate_retention.py
+      - milestone-1
+      - milestone-2/infosys/cleaned data
+      - live_data
+    outs:
+      - reports/inventory/retention_check.csv
+
+  drift_report:
+    cmd: python scripts/drift_monitor.py --reference "${data.reference_hourly}" --current "${data.current_hourly}" --output "${data.drift_report}"
+    deps:
+      - scripts/drift_monitor.py
+      - ${data.reference_hourly}
+      - ${data.current_hourly}
+    outs:
+      - ${data.drift_report}
+
+  feast_source:
+    cmd: python scripts/prepare_feast_source.py
+    deps:
+      - scripts/prepare_feast_source.py
+      - milestone-2/infosys/cleaned data/hourly/all_crypto_inr_hourly_merged.csv
+    outs:
+      - reports/feast/crypto_hourly_features.parquet
+
+  feast_apply:
+    cmd: feast -c feature_repo apply
+    deps:
+      - feature_repo/feature_store.yaml
+      - feature_repo/feature_store_def.py
+      - reports/feast/crypto_hourly_features.parquet
+
+  feast_materialize:
+    cmd: python scripts/materialize_features.py
+    deps:
+      - scripts/materialize_features.py
+      - feature_repo/feature_store.yaml
+      - feature_repo/feature_store_def.py
+      - reports/feast/crypto_hourly_features.parquet
+    outs:
+      - reports/feast/registry.db
+      - reports/feast/online_store.db
+
+  train_models:
+    cmd: python backened/train_models.py --freq ${train.freq} --window ${train.window} --horizon ${train.horizon} --epochs ${train.epochs} --batch-size ${train.batch_size} --val-size ${train.val_size} --test-size ${train.test_size} --coins ${train.coins}
+    deps:
+      - backened/train_models.py
+      - milestone-2/infosys/cleaned data
+    params:
+      - train
+    outs:
+      - milestone-2/infosys/outputs/models
+      - milestone-2/infosys/outputs/scalers
+      - milestone-2/infosys/outputs/predictions
+      - milestone-2/infosys/outputs/metrics
+
+  train_demo_models:
+    cmd: python backened/train_models.py --freq ${demo.freq} --window ${train.window} --horizon ${train.horizon} --epochs ${demo.epochs} --batch-size ${train.batch_size} --val-size ${train.val_size} --test-size ${train.test_size} --coins ${demo.coins}
+    deps:
+      - backened/train_models.py
+      - milestone-2/infosys/cleaned data
+    params:
+      - train.window
+      - train.horizon
+      - train.batch_size
+      - train.val_size
+      - train.test_size
+      - demo

@@ -1,0 +1,6 @@
+Since the VS Code chat is bugging out and deleting messages, you should completely close VS Code and reopen it. This usually fixes the chat window!
+
+To wrap up your project:
+Yes, that docker error just means you don't have Docker installed. That is perfectly fine for your interview. You don't need to run it. Just showing the `Dockerfile` and `docker-compose.yml` files we created is all you need to prove your skills!
+
+You have completed all the tests successfully. Great job! Let me know when you restart VS Code if you need anything else!

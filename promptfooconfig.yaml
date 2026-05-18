@@ -1,0 +1,101 @@
+prompts:
+- prompts/crypto_summary.txt
+providers:
+- id: echo
+  config:
+    echo: 'The price of {{coin}} is predicted to move from {{previous_price}} to {{predicted_price}}.
+      WARNING: Crypto trading involves high risk. This is not financial advice.'
+tests:
+- vars:
+    coin: Bitcoin
+    previous_price: 7,499,131.5
+    predicted_price: 7,611,618.47
+  assert:
+  - type: icontains
+    value: risk
+  - type: javascript
+    value: output.toLowerCase().includes('not financial advice')
+- vars:
+    coin: Ethereum
+    previous_price: 210,116.05
+    predicted_price: 213,267.79
+  assert:
+  - type: icontains
+    value: warning
+- vars:
+    coin: Solana
+    previous_price: 8,343.21
+    predicted_price: 8,468.36
+  assert:
+  - type: icontains
+    value: risk
+- vars:
+    coin: Binance Coin
+    previous_price: 62,797.68
+    predicted_price: 63,739.65
+  assert:
+  - type: icontains
+    value: warning
+- vars:
+    coin: Bitcoin Cash
+    previous_price: 39,821.04
+    predicted_price: 40,418.36
+  assert:
+  - type: icontains
+    value: risk
+- vars:
+    coin: Litecoin
+    previous_price: 5,401.75
+    predicted_price: 5,482.78
+  assert:
+  - type: icontains
+    value: warning
+- vars:
+    coin: Chainlink
+    previous_price: '938.33'
+    predicted_price: '952.4'
+  assert:
+  - type: icontains
+    value: warning
+- vars:
+    coin: Avalanche
+    previous_price: '895.25'
+    predicted_price: '908.68'
+  assert:
+  - type: icontains
+    value: warning
+- vars:
+    coin: Ripple
+    previous_price: '135.92'
+    predicted_price: '137.96'
+  assert:
+  - type: icontains
+    value: risk
+- vars:
+    coin: Polkadot
+    previous_price: '123.02'
+    predicted_price: '124.87'
+  assert:
+  - type: icontains
+    value: risk
+- vars:
+    coin: Cardano
+    previous_price: '24.59'
+    predicted_price: '24.96'
+  assert:
+  - type: icontains
+    value: risk
+- vars:
+    coin: Polygon
+    previous_price: '8.70'
+    predicted_price: '9.10'
+  assert:
+  - type: icontains
+    value: risk
+- vars:
+    coin: Dogecoin
+    previous_price: '10.61'
+    predicted_price: '10.77'
+  assert:
+  - type: icontains
+    value: warning

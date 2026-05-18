@@ -1,0 +1,26 @@
+train:
+  freq: both
+  window: 60
+  horizon: 1
+  epochs: 3
+  batch_size: 64
+  val_size: 0.15
+  test_size: 0.15
+  coins: all
+
+demo:
+  coins: BTC,ETH,SOL
+  freq: hourly
+  epochs: 1
+
+data:
+  reference_hourly: milestone-2/infosys/cleaned data/hourly/bitcoin_inr_hourly.csv
+  current_hourly: live_data/hourly/btc_inr_hourly.csv
+  inventory_dir: reports/inventory
+  drift_report: reports/drift/drift_report.html
+
+feast:
+  repo_path: feature_repo
+  source: reports/feast/crypto_hourly_features.parquet
+  registry: reports/feast/registry.db
+  online_store: reports/feast/online_store.db

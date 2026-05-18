@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlops-backend
+  namespace: crypto-app
+  labels:
+    app: mlops-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mlops-backend
+  template:
+    metadata:
+      labels:
+        app: mlops-backend
+      annotations:
+        # Prometheus scraping
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "5000"
+    spec:
+      containers:
+      - name: backend
+        # In a real environment, ArgoCD updates this image tag automatically
+        image: myregistry/cryptopredict-backend:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: ALLOW_LIVE_TRADING
+          value: "false"
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "500m"
+            memory: "1Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mlops-backend-service
+  namespace: crypto-app
+spec:
+  selector:
+    app: mlops-backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+  type: LoadBalancer

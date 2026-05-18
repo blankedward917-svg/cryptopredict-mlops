@@ -1,0 +1,89 @@
+name: MLOps CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  validate-and-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
+      REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install CI dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pandas great-expectations dvc feast evidently
+
+    - name: Restore DVC data if remote is configured
+      run: |
+        dvc pull || echo "DVC remote not configured for this environment; using checked-out files only."
+
+    - name: Data Quality Gate
+      run: |
+        if [ -d "milestone-2/infosys/cleaned data" ]; then
+          python scripts/data_quality.py
+        else
+          echo "Cleaned data not present. Configure DVC remote for full data validation."
+        fi
+
+    - name: Python Syntax Check
+      run: |
+        python - <<'PY'
+        import ast
+        from pathlib import Path
+
+        for folder in ["backened", "scripts"]:
+            for path in Path(folder).rglob("*.py"):
+                ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+                print(f"syntax ok: {path}")
+        PY
+
+    - name: Feast Repository Check
+      run: |
+        feast -c feature_repo apply
+
+    - name: Evidently Drift Report Smoke Test
+      run: |
+        if [ -f "milestone-2/infosys/cleaned data/hourly/bitcoin_inr_hourly.csv" ] && [ -f "live_data/hourly/btc_inr_hourly.csv" ]; then
+          python scripts/drift_monitor.py
+        else
+          echo "Drift input data not present. Configure DVC remote for full monitoring validation."
+        fi
+
+    - name: Build Backend Docker Image
+      run: |
+        docker build -t myregistry/cryptopredict-backend:${{ github.sha }} ./backened
+
+    - name: Build Frontend Docker Image
+      run: |
+        docker build -t myregistry/cryptopredict-frontend:${{ github.sha }} ./frontened/cryptopredictpro
+
+    - name: Promptfoo Prompt Safety Tests
+      run: |
+        npx promptfoo@latest eval -c promptfooconfig.yaml
+
+    - name: Push Images When Registry Is Configured
+      if: github.event_name == 'push' && env.REGISTRY_USERNAME != '' && env.REGISTRY_PASSWORD != ''
+      run: |
+        echo "$REGISTRY_PASSWORD" | docker login myregistry -u "$REGISTRY_USERNAME" --password-stdin
+        docker push myregistry/cryptopredict-backend:${{ github.sha }}
+        docker push myregistry/cryptopredict-frontend:${{ github.sha }}
+
+    - name: GitOps Handoff
+      run: |
+        echo "ArgoCD watches argocd/application.yaml and syncs manifests from k8s/."

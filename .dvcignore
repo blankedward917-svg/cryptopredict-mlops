@@ -1,0 +1,8 @@
+venv/
+mlops-env/
+frontened/cryptopredictpro/node_modules/
+frontened/cryptopredictpro/build/
+.git/
+.dvc/local_remote/
+__pycache__/
+*.pyc

@@ -1,0 +1,2 @@
+# Data and model artifacts are versioned with DVC for this assignment.
+# Do not route CSV files through Git LFS unless you intentionally switch away from DVC.

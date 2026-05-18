@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlops-frontend
+  namespace: crypto-app
+  labels:
+    app: mlops-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mlops-frontend
+  template:
+    metadata:
+      labels:
+        app: mlops-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: myregistry/cryptopredict-frontend:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: VITE_API_URL
+          value: "http://mlops-backend-service"
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "250m"
+            memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mlops-frontend-service
+  namespace: crypto-app
+spec:
+  selector:
+    app: mlops-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer

@@ -1,0 +1,5 @@
+[core]
+    remote = localremote
+    site_cache_dir = .dvc/tmp/site_cache
+['remote "localremote"']
+    url = .dvc/local_remote

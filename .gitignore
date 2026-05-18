@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+mlops-env/
+.env
+*.env
+
+# Database
+*.db
+*.sqlite3
+
+# Datasets and model artifacts are retained locally and should be versioned with DVC,
+# not committed directly to GitHub. The merged hourly files exceed normal GitHub limits.
+live_data/
+*.csv
+*.keras
+*.joblib
+mlruns/
+reports/
+!reports/.gitkeep
+!reports/feast/
+reports/feast/*.db
+
+# DVC
+.dvc/cache/
+.dvc/tmp/
+.dvc/local_remote/
+
+# Node / Frontend
+node_modules/
+dist/
+build/
+.DS_Store
+
+# IDEs
+.vscode/
+.idea/
