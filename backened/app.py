@@ -672,15 +672,28 @@ def debug_fs():
 def debug_sync():
     import io
     import sys
-    from data_sync import run_sync
+    from data_sync import sync_coin_data, COINS
+    coin = request.args.get("coin", "").upper()
+    timeframe = request.args.get("timeframe", "hourly")
+    interval_type = "hours" if timeframe == "hourly" else "days"
     old_stdout = sys.stdout
     old_stderr = sys.stderr
     sys.stdout = buffer = io.StringIO()
     sys.stderr = buffer
     try:
-        run_sync()
-        success = True
-        error = None
+        if coin:
+            if coin in COINS:
+                sync_coin_data(coin, COINS[coin], interval_type)
+                success = True
+                error = None
+            else:
+                success = False
+                error = f"Coin {coin} not found in COINS mapping"
+        else:
+            from data_sync import run_sync
+            run_sync()
+            success = True
+            error = None
     except Exception as e:
         success = False
         error = str(e)
