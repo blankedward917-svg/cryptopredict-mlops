@@ -668,6 +668,32 @@ def debug_fs():
     except Exception as e:
         return jsonify({"error": str(e)})
 
+@app.route("/debug_sync")
+def debug_sync():
+    import io
+    import sys
+    from data_sync import run_sync
+    old_stdout = sys.stdout
+    old_stderr = sys.stderr
+    sys.stdout = buffer = io.StringIO()
+    sys.stderr = buffer
+    try:
+        run_sync()
+        success = True
+        error = None
+    except Exception as e:
+        success = False
+        error = str(e)
+    finally:
+        sys.stdout = old_stdout
+        sys.stderr = old_stderr
+    output = buffer.getvalue()
+    return jsonify({
+        "success": success,
+        "error": error,
+        "output": output
+    })
+
 @app.route("/debug_model")
 def debug_model():
     coin = request.args.get("coin", "LINK").upper()
