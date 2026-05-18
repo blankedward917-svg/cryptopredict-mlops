@@ -22,6 +22,8 @@ reports/
 !reports/.gitkeep
 !reports/feast/
 reports/feast/*.db
+!reports/drift/drift_report.html
+!reports/promptfoo/promptfoo_report.html
 
 # DVC
 .dvc/cache/
