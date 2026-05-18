@@ -172,7 +172,7 @@ def get_model(timeframe, coin):
             return model
         except Exception as e:
             print(f"❌ Error loading model: {e}")
-            raise e
+            return None
     return None
 
 # Initialize Database
@@ -667,6 +667,37 @@ def debug_fs():
         return jsonify({"path": target, "items": items})
     except Exception as e:
         return jsonify({"error": str(e)})
+
+@app.route("/debug_model")
+def debug_model():
+    coin = request.args.get("coin", "LINK").upper()
+    timeframe = request.args.get("timeframe", "hourly")
+    mapped_name = MODEL_NAME_MAP.get(coin)
+    model_file = f"{mapped_name}.keras"
+    model_path = os.path.join(MODEL_PATH, timeframe, model_file)
+    exists = os.path.exists(model_path)
+    
+    # Try loading it directly
+    load_err = None
+    try:
+        import keras
+        keras.models.load_model(model_path)
+    except Exception as e:
+        load_err = str(e)
+        
+    return jsonify({
+        "coin": coin,
+        "timeframe": timeframe,
+        "mapped_name": mapped_name,
+        "model_file": model_file,
+        "model_path": model_path,
+        "exists": exists,
+        "load_error": load_err,
+        "model_path_exists": os.path.exists(MODEL_PATH),
+        "base_dir": BASE_DIR,
+        "file_path": __file__,
+        "model_path_items": os.listdir(os.path.join(MODEL_PATH, timeframe)) if os.path.exists(os.path.join(MODEL_PATH, timeframe)) else []
+    })
 
 @app.route("/predict", methods=["POST"])
 def predict():
