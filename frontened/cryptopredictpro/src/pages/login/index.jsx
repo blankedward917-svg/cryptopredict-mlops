@@ -6,7 +6,7 @@ const resolveApiBaseUrl = () => {
   if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
   const host = window.location.hostname;
   if (host === 'localhost' || host === '127.0.0.1') return 'http://127.0.0.1:5000';
-  return `http://${host}:5000`;
+  return 'https://cryptopredict-backend.onrender.com';
 };
 
 const API_BASE_URL = resolveApiBaseUrl();
@@ -14,7 +14,7 @@ const API_BASE_URL = resolveApiBaseUrl();
 const AuthPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '508806966523-sldn3j87oc5hsefb5i4hr46mg5eo1ki6.apps.googleusercontent.com';
 
   const [mode, setMode] = useState('login');
   const [name, setName] = useState('');

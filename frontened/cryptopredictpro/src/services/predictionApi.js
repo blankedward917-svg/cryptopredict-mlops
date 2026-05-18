@@ -7,7 +7,7 @@ const resolveApiBaseUrl = () => {
   if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
   const host = window.location.hostname;
   if (host === 'localhost' || host === '127.0.0.1') return 'http://127.0.0.1:5000';
-  return `http://${host}:5000`;
+  return 'https://cryptopredict-backend.onrender.com';
 };
 
 const API_BASE_URL = resolveApiBaseUrl();
