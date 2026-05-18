@@ -24,6 +24,8 @@ reports/*
 reports/feast/*.db
 !reports/drift/drift_report.html
 !reports/promptfoo/promptfoo_report.html
+!milestone-2/infosys/outputs/models/
+!milestone-2/infosys/outputs/models/**
 
 # DVC
 .dvc/cache/

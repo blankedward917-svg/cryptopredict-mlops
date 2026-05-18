@@ -8,8 +8,8 @@ providers:
 tests:
 - vars:
     coin: Bitcoin
-    previous_price: 7,403,595.0
-    predicted_price: 7,514,648.92
+    previous_price: 7,408,635.5
+    predicted_price: 7,519,765.03
   assert:
   - type: icontains
     value: risk
@@ -17,71 +17,71 @@ tests:
     value: output.toLowerCase().includes('not financial advice')
 - vars:
     coin: Ethereum
-    previous_price: 203,931.42
-    predicted_price: 206,990.39
+    previous_price: 203,935.66
+    predicted_price: 206,994.69
   assert:
   - type: icontains
     value: warning
 - vars:
     coin: Solana
-    previous_price: 8,159.8
-    predicted_price: 8,282.2
+    previous_price: 8,161.82
+    predicted_price: 8,284.25
   assert:
   - type: icontains
     value: risk
 - vars:
     coin: Binance Coin
-    previous_price: 61,673.88
-    predicted_price: 62,598.99
+    previous_price: 61,714.87
+    predicted_price: 62,640.59
   assert:
   - type: icontains
     value: warning
 - vars:
     coin: Bitcoin Cash
-    previous_price: 36,071.17
-    predicted_price: 36,612.24
+    previous_price: 35,098.4
+    predicted_price: 35,624.88
   assert:
   - type: icontains
     value: risk
 - vars:
     coin: Litecoin
-    previous_price: 5,180.27
-    predicted_price: 5,257.97
+    previous_price: 5,167.96
+    predicted_price: 5,245.48
   assert:
   - type: icontains
     value: warning
 - vars:
     coin: Chainlink
-    previous_price: '912.4'
-    predicted_price: '926.09'
+    previous_price: '910.6'
+    predicted_price: '924.26'
   assert:
   - type: icontains
     value: warning
 - vars:
     coin: Avalanche
-    previous_price: '879.14'
-    predicted_price: '892.33'
+    previous_price: '877.91'
+    predicted_price: '891.08'
   assert:
   - type: icontains
     value: warning
 - vars:
     coin: Ripple
-    previous_price: '133.59'
-    predicted_price: '135.59'
+    previous_price: '133.45'
+    predicted_price: '135.45'
   assert:
   - type: icontains
     value: risk
 - vars:
     coin: Polkadot
-    previous_price: '117.85'
-    predicted_price: '119.62'
+    previous_price: '117.48'
+    predicted_price: '119.24'
   assert:
   - type: icontains
     value: risk
 - vars:
     coin: Cardano
-    previous_price: '24.02'
-    predicted_price: '24.38'
+    previous_price: '24.0'
+    predicted_price: '24.36'
   assert:
   - type: icontains
     value: risk
@@ -94,8 +94,8 @@ tests:
     value: risk
 - vars:
     coin: Dogecoin
-    previous_price: '10.07'
-    predicted_price: '10.22'
+    previous_price: '10.02'
+    predicted_price: '10.17'
   assert:
   - type: icontains
     value: warning

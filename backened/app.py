@@ -172,7 +172,7 @@ def get_model(timeframe, coin):
             return model
         except Exception as e:
             print(f"❌ Error loading model: {e}")
-            return None
+            raise e
     return None
 
 # Initialize Database
