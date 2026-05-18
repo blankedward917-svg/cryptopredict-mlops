@@ -3,9 +3,10 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const resolveApiBaseUrl = () => {
-  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
   const host = window.location.hostname;
-  if (host === 'localhost' || host === '127.0.0.1') return 'http://127.0.0.1:5000';
+  if (host === 'localhost' || host === '127.0.0.1') {
+    return import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000';
+  }
   return 'https://cryptopredict-backend.onrender.com';
 };
 
