@@ -3,7 +3,10 @@ import pandas as pd
 import requests
 import time
 from datetime import datetime
-from database import get_db_connection
+from database import get_db_connection, DATABASE_URL
+
+def check_is_postgres():
+    return DATABASE_URL and (DATABASE_URL.startswith("postgres") or DATABASE_URL.startswith("postgresql"))
 
 # Configuration
 COINDESK_API_BASE = "https://data-api.coindesk.com"
@@ -30,10 +33,10 @@ def get_last_timestamp(coin, timeframe):
         cursor = conn.cursor()
         query = "SELECT MAX(timestamp), COUNT(*) FROM ohlcv WHERE coin = ? AND timeframe = ?"
         # Check if SQLite or Postgres for param symbol
-        if hasattr(cursor, 'description') and not hasattr(cursor, 'cursor_factory'): # SQLite
-             cursor.execute(query, (coin, timeframe))
-        else:
+        if check_is_postgres():
              cursor.execute(query.replace("?", "%s"), (coin, timeframe))
+        else:
+             cursor.execute(query, (coin, timeframe))
              
         row = cursor.fetchone()
         if row and row[0] and row[1] > 65:
@@ -99,7 +102,7 @@ def sync_coin_data(coin_name, instrument, interval_type):
         try:
             cursor = conn.cursor()
             # Prepare query for upsert
-            is_postgres = hasattr(cursor, 'cursor_factory')
+            is_postgres = check_is_postgres()
             
             if is_postgres:
                 from psycopg2.extras import execute_values
@@ -118,18 +121,18 @@ def sync_coin_data(coin_name, instrument, interval_type):
                 cursor.executemany(query, all_new_records)
             
             conn.commit()
-            print(f"✅ Successfully synced {len(all_new_records)} records for {coin_name} {timeframe}")
+            print(f"[OK] Successfully synced {len(all_new_records)} records for {coin_name} {timeframe}")
         finally:
             conn.close()
     else:
         print(f"No newer data found for {coin_name} {timeframe}")
 
 def run_sync():
-    print(f"🚀 Starting Centralized Data Sync Engine at {datetime.now()}")
+    print(f"[Sync Engine] Starting Centralized Data Sync Engine at {datetime.now()}")
     for coin, instrument in COINS.items():
         sync_coin_data(coin, instrument, "hours")
         sync_coin_data(coin, instrument, "days")
-    print(f"🏁 Sync completed at {datetime.now()}")
+    print(f"[Sync Engine] Sync completed at {datetime.now()}")
 
 if __name__ == "__main__":
     run_sync()
