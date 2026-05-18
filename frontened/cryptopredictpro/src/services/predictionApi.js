@@ -36,6 +36,16 @@ const COIN_ORDER = ["BTC", "ETH", "DOGE", "LTC", "DOT", "MATIC", "XRP", "LINK", 
 // USD to INR conversion rate (should be updated regularly in production)
 const USD_TO_INR = 88.19;
 
+/**
+ * Ensures naive ISO datetime strings are treated as UTC by web browsers.
+ */
+export const ensureUtcString = (timeStr) => {
+  if (!timeStr) return '';
+  const str = String(timeStr).trim();
+  if (str.endsWith('Z') || str.includes('+') || str.includes('GMT')) return str;
+  return str + 'Z';
+};
+
 // ----------------------------
 // API Functions
 // ----------------------------

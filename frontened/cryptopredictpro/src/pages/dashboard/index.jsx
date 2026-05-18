@@ -10,7 +10,7 @@ import PredictionSummary from './components/PredictionSummary';
 import DashboardStats from './components/DashboardStats';
 import TradingPanel from './components/TradingPanel';
 import Icon from '../../components/AppIcon';
-import { formatINRPrice, getAllCoinsLivePrices, getLivePrediction, getUserStats } from '../../services/predictionApi';
+import { formatINRPrice, getAllCoinsLivePrices, getLivePrediction, getUserStats, ensureUtcString } from '../../services/predictionApi';
 
 const sectionAnim = {
   initial: { opacity: 0, y: 18 },
@@ -164,7 +164,7 @@ const Dashboard = () => {
               accuracyRate={stats.accuracyRate}
               lastActivity={
                 stats.history.length > 0
-                  ? `Last: ${stats.history[0].coin} (${new Date(stats.history[0].timestamp).toLocaleTimeString()})`
+                  ? `Last: ${stats.history[0].coin} (${new Date(ensureUtcString(stats.history[0].timestamp)).toLocaleTimeString()})`
                   : 'No predictions yet'
               }
             />
@@ -221,7 +221,7 @@ const Dashboard = () => {
               </div>
               {livePriceTimestamp && (
                 <p className="mt-2 text-[11px] text-muted-foreground">
-                  Last update: {new Date(livePriceTimestamp).toLocaleTimeString()}
+                  Last update: {new Date(ensureUtcString(livePriceTimestamp)).toLocaleTimeString()}
                 </p>
               )}
             </motion.div>

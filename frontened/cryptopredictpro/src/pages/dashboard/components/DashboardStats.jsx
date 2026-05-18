@@ -1,5 +1,6 @@
 import React from 'react';
 import Icon from '../../../components/AppIcon';
+import { ensureUtcString } from '../../../services/predictionApi';
 
 const DashboardStats = ({ user, totalPredictions, accuracyRate, lastActivity }) => {
   const stats = [
@@ -19,7 +20,7 @@ const DashboardStats = ({ user, totalPredictions, accuracyRate, lastActivity }) 
     },
     {
       label: 'Active Since',
-      value: user?.createdAt ? new Date(user.createdAt)?.toLocaleDateString() : 'Today',
+      value: user?.createdAt ? new Date(ensureUtcString(user.createdAt))?.toLocaleDateString() : 'Today',
       icon: 'Calendar',
       color: 'var(--color-accent)',
       bgColor: 'bg-accent/10'
