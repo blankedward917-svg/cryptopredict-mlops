@@ -3,7 +3,7 @@ services:
     name: cryptopredict-backend
     runtime: python
     buildCommand: "pip install -r backened/requirements.txt"
-    startCommand: "gunicorn --chdir backened app:app"
+    startCommand: "uvicorn --app-dir backened main:fastapi_app --host 0.0.0.0 --port $PORT"
     envVars:
       - key: PYTHON_VERSION
         value: 3.10.12
