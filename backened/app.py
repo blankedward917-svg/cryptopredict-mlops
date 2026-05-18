@@ -856,7 +856,7 @@ def predict():
             "confidence": real_confidence,
             "timestamp": datetime.now().isoformat(),
             "status": status_text,
-            "version": "2.5"
+            "version": "2.6"
         }
 
         # Save to DB
