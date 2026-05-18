@@ -1,7 +1,6 @@
 import React from 'react';
 import Button from '../../../components/ui/Button';
 import Icon from '../../../components/AppIcon';
-import { ensureUtcString } from '../../../services/predictionApi';
 
 const PredictionControls = ({ 
   selectedCrypto, 
@@ -55,7 +54,7 @@ const PredictionControls = ({
               <span className="text-sm text-muted-foreground">Last prediction</span>
             </div>
             <span className="text-sm font-medium text-foreground">
-              {new Date(ensureUtcString(lastPrediction.timestamp))?.toLocaleTimeString()}
+              {new Date(lastPrediction.timestamp)?.toLocaleTimeString()}
             </span>
           </div>
         </div>

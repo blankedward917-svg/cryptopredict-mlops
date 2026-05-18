@@ -1,11 +1,10 @@
 import React from 'react';
 import Icon from '../../../components/AppIcon';
-import { ensureUtcString } from '../../../services/predictionApi';
 
 const AccountDetails = ({ user }) => {
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
-    return new Date(ensureUtcString(dateString))?.toLocaleDateString('en-US', {
+    return new Date(dateString)?.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
