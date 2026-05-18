@@ -18,7 +18,7 @@ live_data/
 *.keras
 *.joblib
 mlruns/
-reports/
+reports/*
 !reports/.gitkeep
 !reports/feast/
 reports/feast/*.db
