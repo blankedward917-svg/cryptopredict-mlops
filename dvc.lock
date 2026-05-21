@@ -3,10 +3,11 @@ stages:
   feast_source:
     cmd: python scripts/prepare_feast_source.py
     deps:
-    - path: milestone-2/infosys/cleaned data/hourly/all_crypto_inr_hourly_merged.csv
+    - path: milestone-2/infosys/cleaned 
+        data/hourly/all_crypto_inr_hourly_merged.csv
       hash: md5
-      md5: 06486f6a38784d40b9791b9d50a73e34
-      size: 128072421
+      md5: 0e6ab91275980109e0d09e70668b0036
+      size: 155495140
     - path: scripts/prepare_feast_source.py
       hash: md5
       md5: 05949ffe3ec91488a839dc4d960c28bf
@@ -14,8 +15,8 @@ stages:
     outs:
     - path: reports/feast/crypto_hourly_features.parquet
       hash: md5
-      md5: cb87ef0b572ca42a29194d4c8cf6019b
-      size: 203821
+      md5: 44b871712700efc099699139dbae1a70
+      size: 263127
   feast_apply:
     cmd: feast -c feature_repo apply
     deps:
@@ -29,13 +30,8 @@ stages:
       size: 1125
     - path: reports/feast/crypto_hourly_features.parquet
       hash: md5
-      md5: cb87ef0b572ca42a29194d4c8cf6019b
-      size: 203821
-    outs:
-    - path: reports/feast/registry.db
-      hash: md5
-      md5: 457275e1bfd6dae2a7106b11dc22daa8
-      size: 1640
+      md5: 44b871712700efc099699139dbae1a70
+      size: 263127
   feast_materialize:
     cmd: python scripts/materialize_features.py
     deps:
@@ -49,8 +45,8 @@ stages:
       size: 1125
     - path: reports/feast/crypto_hourly_features.parquet
       hash: md5
-      md5: cb87ef0b572ca42a29194d4c8cf6019b
-      size: 203821
+      md5: 44b871712700efc099699139dbae1a70
+      size: 263127
     - path: scripts/materialize_features.py
       hash: md5
       md5: 1f09130acca25235d8ec57f701dc1b74
@@ -58,9 +54,34 @@ stages:
     outs:
     - path: reports/feast/online_store.db
       hash: md5
-      md5: b9a656b3a313ecb229fd91a569b48bc3
+      md5: 6c976facfee4ac7be149e1858e1ec830
       size: 16384
     - path: reports/feast/registry.db
       hash: md5
-      md5: 379d2594f1703bdc64aaa9b9a52de7bc
-      size: 1572
+      md5: 3a1572d52b8006ba0b6dbc38c4c1216a
+      size: 1569
+  train_demo_models:
+    cmd: python backened/train_models.py --freq hourly --window 60 --horizon 1 
+      --epochs 1 --batch-size 64 --val-size 0.15 --test-size 0.15 --coins 
+      BTC,ETH,SOL
+    deps:
+    - path: backened/train_models.py
+      hash: md5
+      md5: 0971e0a208c2eca927cdc2bfab193f49
+      size: 12068
+    - path: milestone-2/infosys/cleaned data
+      hash: md5
+      md5: 176cdeb73ec83be9352fd94033c0f335.dir
+      size: 310811853
+      nfiles: 34
+    params:
+      params.yaml:
+        demo:
+          coins: BTC,ETH,SOL
+          freq: hourly
+          epochs: 1
+        train.batch_size: 64
+        train.horizon: 1
+        train.test_size: 0.15
+        train.val_size: 0.15
+        train.window: 60
